@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  recon-suite:
+    build: .
+    container_name: advanced-recon-suite
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./reports:/app/reports
+      - ./config:/app/config
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+    restart: unless-stopped
+    
+    # Security settings
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW  # Needed for nmap
+      - NET_ADMIN  # Needed for advanced network operations
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # Optional: Add a reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: recon-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - recon-suite
+    restart: unless-stopped
