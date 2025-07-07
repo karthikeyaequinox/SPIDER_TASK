@@ -9,7 +9,12 @@ import os
 import threading
 import time
 from datetime import datetime
-from advanced_recon import AdvancedRecon
+try:
+    from advanced_recon import AdvancedRecon
+    RECON_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Advanced recon not available: {e}")
+    RECON_AVAILABLE = False
 
 app = Flask(__name__)
 app.secret_key = 'reconnaissance_suite_2024'
@@ -86,14 +91,14 @@ def download_report(filename):
     """Download report files"""
     return send_from_directory('reports', filename)
 
-@app.route('/screenshots/<path:filename>')
-def view_screenshot(filename):
-    """View screenshot files"""
-    return send_from_directory('reports/screenshots', filename)
-
 def run_scan_background(scan_id, domain, modules, shodan_key):
     """Run reconnaissance scan in background"""
     try:
+        if not RECON_AVAILABLE:
+            active_scans[scan_id]['status'] = 'failed'
+            active_scans[scan_id]['logs'].append("Advanced recon module not available")
+            return
+            
         # Update status
         active_scans[scan_id]['status'] = 'running'
         active_scans[scan_id]['logs'].append(f"Starting scan for {domain}")
@@ -109,7 +114,6 @@ def run_scan_background(scan_id, domain, modules, shodan_key):
             'tech': 10,
             'emails': 10,
             'shodan': 5,
-            'screenshots': 15,
             'waf': 10,
             'vulnscan': 10,
             'report': 5
@@ -126,7 +130,6 @@ def run_scan_background(scan_id, domain, modules, shodan_key):
             'tech': recon.detect_technology,
             'emails': recon.harvest_emails,
             'shodan': lambda: recon.shodan_lookup(shodan_key),
-            'screenshots': recon.capture_screenshots,
             'waf': recon.detect_waf_cdn,
             'vulnscan': recon.vulnerability_scan_basic,
             'report': recon.generate_html_report

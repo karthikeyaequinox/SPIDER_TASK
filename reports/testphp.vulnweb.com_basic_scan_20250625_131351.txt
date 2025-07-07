@@ -1,0 +1,29 @@
+[MOCK] Basic Reconnaissance Report for: testphp.vulnweb.com
+Generated on: 2025-06-25T13:13:51.875533
+============================================================
+
+SUBDOMAINS (5 found):
+  • www.testphp.vulnweb.com
+  • mail.testphp.vulnweb.com
+  • ftp.testphp.vulnweb.com
+  • admin.testphp.vulnweb.com
+  • api.testphp.vulnweb.com
+
+DNS RECORDS:
+  A:
+    • 93.184.216.34
+    • 192.168.1.1
+  NS:
+    • a.iana-servers.net
+    • b.iana-servers.net
+  MX:
+    • mail.example.com
+  TXT:
+    • v=spf1 include:_spf.google.com ~all
+
+GEOLOCATION:
+  • IP: 93.184.216.34
+  • Country: United States
+  • City: Norwell
+  • ISP: Edgecast Inc.
+

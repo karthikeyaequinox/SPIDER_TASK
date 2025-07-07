@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Intermediate Reconnaissance Toolkit
-Level 2: Extended scanning with modular capabilities and structured reporting
+Intermediate Reconnaissance 
 """
 
 import sys
@@ -13,9 +12,10 @@ import socket
 import subprocess
 import threading
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from basic_recon import BasicRecon
-import nmap
+
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -30,47 +30,151 @@ class IntermediateRecon(BasicRecon):
             'emails': [],
             'shodan_info': {}
         })
-        self.nm = nmap.PortScanner()
+        # Check if nmap is available
+        self.nmap_available = self.check_nmap_availability()
+    
+    def check_nmap_availability(self):
+        """Check if nmap is available on the system"""
+        try:
+            result = subprocess.run(['nmap', '--version'], 
+                                  capture_output=True, text=True, timeout=5)
+            return result.returncode == 0
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return False
     
     def port_scan_nmap(self, ports="1-1000", scan_type="-sS"):
-        """Perform port scanning using nmap"""
+        """Perform simple port scanning using CLI nmap - only open ports and states"""
+        if not self.nmap_available:
+            print(f"[-] Nmap not available, skipping port scan")
+            print(f"[-] Install nmap: sudo apt-get install nmap")
+            self.results['port_scan'] = {
+                'error': 'Nmap not available',
+                'open_ports': []
+            }
+            return
+            
         print(f"[+] Scanning ports {ports} on {self.domain}...")
         try:
             # Get target IP
             target_ip = socket.gethostbyname(self.domain)
             print(f"[+] Target IP: {target_ip}")
             
-            # Perform scan
-            scan_result = self.nm.scan(target_ip, ports, arguments=scan_type)
+            # Prepare simple nmap command - only basic port scanning
+            xml_output = f"/tmp/nmap_scan_{self.domain}_{int(time.time())}.xml"
+            nmap_cmd = [
+                'nmap',
+                scan_type,          # SYN scan
+                '-p', ports,        # Port range
+                '-oX', xml_output,  # XML output
+                target_ip
+            ]
             
-            if target_ip in scan_result['scan']:
-                host_info = scan_result['scan'][target_ip]
-                self.results['port_scan'] = {
-                    'target_ip': target_ip,
-                    'scan_type': scan_type,
-                    'ports_scanned': ports,
-                    'open_ports': [],
-                    'host_status': host_info.get('status', {}).get('state', 'unknown')
-                }
+            print(f"[+] Running: {' '.join(nmap_cmd)}")
+            
+            # Execute nmap scan
+            result = subprocess.run(nmap_cmd, capture_output=True, text=True, timeout=120)
+            
+            if result.returncode == 0:
+                # Parse XML output
+                self.parse_simple_nmap_xml(xml_output, target_ip, scan_type, ports)
                 
-                if 'tcp' in host_info:
-                    for port, port_info in host_info['tcp'].items():
-                        if port_info['state'] == 'open':
-                            port_data = {
-                                'port': port,
-                                'state': port_info['state'],
-                                'service': port_info.get('name', 'unknown'),
-                                'version': port_info.get('version', ''),
-                                'product': port_info.get('product', '')
-                            }
-                            self.results['port_scan']['open_ports'].append(port_data)
-                
+                # Clean up temp file
+                if os.path.exists(xml_output):
+                    os.remove(xml_output)
+                    
                 print(f"[+] Found {len(self.results['port_scan']['open_ports'])} open ports")
             else:
-                print(f"[-] No scan results for {target_ip}")
+                print(f"[-] Nmap scan failed: {result.stderr}")
+                # Fall back to basic scan
+                self.basic_port_scan(target_ip, ports)
                 
+        except subprocess.TimeoutExpired:
+            print(f"[-] Nmap scan timed out")
         except Exception as e:
             print(f"[-] Error during port scan: {e}")
+    
+    def parse_simple_nmap_xml(self, xml_file, target_ip, scan_type, ports):
+        """Parse nmap XML output - simplified version for ports and states only"""
+        try:
+            tree = ET.parse(xml_file)
+            root = tree.getroot()
+            
+            self.results['port_scan'] = {
+                'target_ip': target_ip,
+                'scan_type': scan_type,
+                'ports_scanned': ports,
+                'open_ports': [],
+                'host_status': 'unknown'
+            }
+            
+            # Find host information
+            host = root.find('host')
+            if host is not None:
+                # Get host status
+                status = host.find('status')
+                if status is not None:
+                    self.results['port_scan']['host_status'] = status.get('state', 'unknown')
+                
+                # Get port information - simplified
+                ports_elem = host.find('ports')
+                if ports_elem is not None:
+                    for port in ports_elem.findall('port'):
+                        port_id = port.get('portid')
+                        protocol = port.get('protocol')
+                        
+                        state = port.find('state')
+                        if state is not None:
+                            port_state = state.get('state')
+                            
+                            # Only store open ports
+                            if port_state == 'open':
+                                port_data = {
+                                    'port': int(port_id),
+                                    'protocol': protocol,
+                                    'state': port_state
+                                }
+                                self.results['port_scan']['open_ports'].append(port_data)
+                        
+        except Exception as e:
+            print(f"[-] Error parsing nmap XML: {e}")
+    
+    def basic_port_scan(self, target_ip, port_range):
+        """Basic port scan fallback using socket connections"""
+        print(f"[+] Performing basic port scan fallback...")
+        
+        self.results['port_scan'] = {
+            'target_ip': target_ip,
+            'scan_type': 'basic_tcp',
+            'ports_scanned': port_range,
+            'open_ports': [],
+            'host_status': 'up'
+        }
+        
+        # Parse port range
+        if '-' in port_range:
+            start_port, end_port = map(int, port_range.split('-'))
+            ports_to_scan = range(start_port, min(end_port + 1, 1001))  # Limit to 1000 ports max
+        else:
+            ports_to_scan = [int(port_range)]
+        
+        for port in ports_to_scan:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1)
+                result = sock.connect_ex((target_ip, port))
+                
+                if result == 0:
+                    port_data = {
+                        'port': port,
+                        'protocol': 'tcp',
+                        'state': 'open'
+                    }
+                    self.results['port_scan']['open_ports'].append(port_data)
+                
+                sock.close()
+                
+            except Exception:
+                continue
     
     def banner_grabbing(self):
         """Perform banner grabbing on open ports"""
@@ -82,16 +186,32 @@ class IntermediateRecon(BasicRecon):
         
         target_ip = self.results['port_scan']['target_ip']
         
+        # Common service names for banner grabbing
+        common_services = {
+            21: 'ftp', 22: 'ssh', 23: 'telnet', 25: 'smtp', 53: 'dns',
+            80: 'http', 110: 'pop3', 111: 'rpcbind', 135: 'msrpc', 139: 'netbios-ssn',
+            143: 'imap', 443: 'https', 993: 'imaps', 995: 'pop3s'
+        }
+        
         for port_info in self.results['port_scan']['open_ports']:
             port = port_info['port']
+            
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(5)
                 sock.connect((target_ip, port))
                 
-                # Send HTTP request for web services
-                if port in [80, 443, 8080, 8443]:
+                # Send appropriate request based on common ports
+                if port in [80, 8080]:
                     sock.send(b"HEAD / HTTP/1.1\r\nHost: " + self.domain.encode() + b"\r\n\r\n")
+                elif port == 443:
+                    sock.send(b"HEAD / HTTP/1.1\r\nHost: " + self.domain.encode() + b"\r\n\r\n")
+                elif port == 21:
+                    pass  # FTP sends banner automatically
+                elif port == 25:
+                    sock.send(b"EHLO test.com\r\n")
+                elif port == 110:
+                    pass  # POP3 sends banner automatically
                 else:
                     sock.send(b"\r\n")
                 
@@ -99,7 +219,10 @@ class IntermediateRecon(BasicRecon):
                 sock.close()
                 
                 if banner:
-                    self.results['banner_grab'][port] = banner
+                    self.results['banner_grab'][port] = {
+                        'service': common_services.get(port, 'unknown'),
+                        'banner': banner
+                    }
                     print(f"[+] Banner grabbed for port {port}")
                 
             except Exception as e:
@@ -213,7 +336,13 @@ class IntermediateRecon(BasicRecon):
             return
         
         try:
-            import shodan
+            try:
+                import shodan
+                SHODAN_AVAILABLE = True
+            except ImportError:
+                print(f"[-] Shodan library not installed, skipping Shodan lookup")
+                print(f"[-] Install with: pip install shodan")
+                return
             
             api = shodan.Shodan(api_key)
             target_ip = socket.gethostbyname(self.domain)
@@ -303,10 +432,10 @@ class IntermediateRecon(BasicRecon):
                         for record in records:
                             writer.writerow(['DNS', record_type, record, ''])
                     
-                    # Write open ports
+                    # Write open ports - simplified
                     for port_info in self.results.get('port_scan', {}).get('open_ports', []):
                         writer.writerow(['Ports', 'Open Port', port_info['port'], 
-                                       f"Service: {port_info['service']}"])
+                                       f"State: {port_info['state']}"])
                     
                     # Write emails
                     for email in self.results.get('emails', []):
@@ -330,12 +459,17 @@ class IntermediateRecon(BasicRecon):
         """Display intermediate reconnaissance results"""
         super().display_results()
         
-        # Port scan results
+        # Port scan results - simplified
         if self.results.get('port_scan', {}).get('open_ports'):
             print(f"\n[PORT SCAN RESULTS]:")
             for port_info in self.results['port_scan']['open_ports']:
-                print(f"  • Port {port_info['port']}: {port_info['service']} "
-                      f"({port_info.get('product', 'Unknown')})")
+                print(f"  • Port {port_info['port']}: {port_info['state']}")
+        
+        # Banner grab results
+        if self.results.get('banner_grab'):
+            print(f"\n[BANNER GRAB RESULTS]:")
+            for port, banner_info in self.results['banner_grab'].items():
+                print(f"  • Port {port} ({banner_info['service']}): {banner_info['banner'][:50]}...")
         
         # Technology stack
         if self.results.get('technology_stack'):

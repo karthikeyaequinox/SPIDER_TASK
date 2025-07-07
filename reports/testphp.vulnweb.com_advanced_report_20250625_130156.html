@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Reconnaissance Report - testphp.vulnweb.com</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #007acc; padding-bottom: 20px; }
+        .section { margin: 30px 0; }
+        .section h2 { color: #007acc; border-left: 4px solid #007acc; padding-left: 15px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .info-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; }
+        .warning-card { border-left-color: #ffc107; }
+        .danger-card { border-left-color: #dc3545; }
+        .list-item { padding: 8px 0; border-bottom: 1px solid #eee; }
+        .screenshot { max-width: 300px; margin: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .collapsible { background-color: #007acc; color: white; cursor: pointer; padding: 15px; border: none; text-align: left; outline: none; font-size: 16px; border-radius: 4px; margin: 5px 0; width: 100%; }
+        .collapsible:hover { background-color: #005fa3; }
+        .content { padding: 0 15px; display: none; overflow: hidden; background-color: #f8f9fa; border-radius: 0 0 4px 4px; }
+        .badge { display: inline-block; padding: 3px 8px; background: #007acc; color: white; border-radius: 12px; font-size: 12px; margin: 2px; }
+        .badge.success { background: #28a745; }
+        .badge.warning { background: #ffc107; color: black; }
+        .badge.danger { background: #dc3545; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007acc; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Advanced Reconnaissance Report</h1>
+            <h2>testphp.vulnweb.com</h2>
+            <p>Generated on: 2025-06-25T12:59:15.015091</p>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2>📊 Executive Summary</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🌐 Subdomains Found</h3>
+                    <p><strong>0</strong> subdomains discovered</p>
+                </div>
+                <div class="info-card warning-card">
+                    <h3>🔓 Open Ports</h3>
+                    <p><strong>1</strong> open ports detected</p>
+                </div>
+                <div class="info-card success-card">
+                    <h3>🛡️ Security</h3>
+                    <p>WAF: Not detected</p>
+                </div>
+                <div class="info-card">
+                    <h3>📧 Intelligence</h3>
+                    <p><strong>0</strong> email addresses found</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subdomains -->
+        <div class="section">
+            <button class="collapsible">🌐 Subdomains (0)</button>
+            <div class="content">
+                <table>
+                    <tr><th>Subdomain</th><th>Status</th></tr>
+                    
+                </table>
+            </div>
+        </div>
+
+        <!-- Port Scan Results -->
+        
+        <div class="section">
+            <button class="collapsible">🔓 Port Scan Results</button>
+            <div class="content">
+                <table>
+                    <tr><th>Port</th><th>Service</th><th>Product</th><th>Version</th></tr>
+                    
+                    <tr>
+                        <td>80</td>
+                        <td>http</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+        
+
+        <!-- Technology Stack -->
+        
+        <div class="section">
+            <button class="collapsible">💻 Technology Stack</button>
+            <div class="content">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Web Server</h3>
+                        <p>nginx/1.19.0</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>CMS</h3>
+                        <p>Unknown</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Programming Languages</h3>
+                        
+                        <span class="badge">PHP</span>
+                        
+                    </div>
+                    <div class="info-card">
+                        <h3>Frameworks</h3>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Security Analysis -->
+        <div class="section">
+            <button class="collapsible">🛡️ Security Analysis</button>
+            <div class="content">
+                
+
+                
+
+                
+            </div>
+        </div>
+
+        <!-- Screenshots -->
+        
+        <div class="section">
+            <button class="collapsible">📸 Screenshots</button>
+            <div class="content">
+                <div style="display: flex; flex-wrap: wrap;">
+                
+                    
+                
+                    
+                    <div style="margin: 10px;">
+                        <h4>http://testphp.vulnweb.com</h4>
+                        <img src="screenshots/testphp.vulnweb.com_http_20250625_130109.png" alt="http://testphp.vulnweb.com" class="screenshot">
+                    </div>
+                    
+                
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Intelligence -->
+        
+
+        <!-- DNS Records -->
+        
+        <div class="section">
+            <button class="collapsible">🌍 DNS Records</button>
+            <div class="content">
+                
+                    
+                    <h3>A Records</h3>
+                    <ul>
+                    
+                        <li class="list-item">44.228.249.3</li>
+                    
+                    </ul>
+                    
+                
+                    
+                
+                    
+                
+                    
+                    <h3>TXT Records</h3>
+                    <ul>
+                    
+                        <li class="list-item">"google-site-verification:toEctYsulNIxgraKk7H3z58PCyz2IOCc36pIupEPmYQ"</li>
+                    
+                    </ul>
+                    
+                
+                    
+                
+            </div>
+        </div>
+        
+
+        <div class="section" style="text-align: center; margin-top: 50px; color: #666;">
+            <p>Report generated by Advanced Reconnaissance Suite</p>
+            <p>⚠️ This report is for authorized security testing only</p>
+        </div>
+    </div>
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+        

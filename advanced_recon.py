@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Advanced Reconnaissance Suite
-Level 3: Professional-grade toolkit with screenshots, WAF detection, and reporting
+Advanced Reconnaissance 
 """
 
 import sys
@@ -11,9 +10,7 @@ import json
 import subprocess
 import time
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
+
 from intermediate_recon import IntermediateRecon
 import requests
 from jinja2 import Template
@@ -23,7 +20,6 @@ class AdvancedRecon(IntermediateRecon):
     def __init__(self, domain):
         super().__init__(domain)
         self.results.update({
-            'screenshots': {},
             'waf_detection': {},
             'vulnerability_scan': {},
             'security_headers': {}
@@ -31,67 +27,7 @@ class AdvancedRecon(IntermediateRecon):
         
         # Ensure directories exist
         os.makedirs('reports', exist_ok=True)
-        os.makedirs('reports/screenshots', exist_ok=True)
         os.makedirs('reports/vuln', exist_ok=True)
-    
-    def capture_screenshots(self):
-        """Capture screenshots of discovered subdomains"""
-        print(f"[+] Capturing screenshots of subdomains...")
-        
-        # Configure Chrome options for headless mode
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--window-size=1920,1080')
-        
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # Get list of domains to screenshot (main domain + subdomains)
-        domains_to_screenshot = [self.domain]
-        if self.results.get('subdomains'):
-            # Limit to first 10 subdomains to avoid taking too long
-            domains_to_screenshot.extend(self.results['subdomains'][:10])
-        
-        for domain in domains_to_screenshot:
-            protocols = ['https', 'http']
-            for protocol in protocols:
-                try:
-                    print(f"[+] Capturing screenshot for {protocol}://{domain}")
-                    
-                    driver = webdriver.Chrome(options=chrome_options)
-                    driver.set_page_load_timeout(30)
-                    
-                    url = f"{protocol}://{domain}"
-                    driver.get(url)
-                    
-                    # Wait for page to load
-                    time.sleep(3)
-                    
-                    # Take screenshot
-                    screenshot_filename = f"{domain}_{protocol}_{timestamp}.png"
-                    screenshot_path = os.path.join('reports', 'screenshots', screenshot_filename)
-                    driver.save_screenshot(screenshot_path)
-                    
-                    self.results['screenshots'][f"{protocol}://{domain}"] = {
-                        'filename': screenshot_filename,
-                        'path': screenshot_path,
-                        'timestamp': timestamp,
-                        'status': 'success'
-                    }
-                    
-                    driver.quit()
-                    print(f"[+] Screenshot saved: {screenshot_filename}")
-                    break  # If https works, don't try http
-                    
-                except Exception as e:
-                    if 'driver' in locals():
-                        driver.quit()
-                    print(f"[-] Error capturing screenshot for {protocol}://{domain}: {e}")
-                    self.results['screenshots'][f"{protocol}://{domain}"] = {
-                        'status': 'failed',
-                        'error': str(e)
-                    }
     
     def detect_waf_cdn(self):
         """Detect Web Application Firewalls and CDN services"""
@@ -231,7 +167,6 @@ class AdvancedRecon(IntermediateRecon):
         .warning-card { border-left-color: #ffc107; }
         .danger-card { border-left-color: #dc3545; }
         .list-item { padding: 8px 0; border-bottom: 1px solid #eee; }
-        .screenshot { max-width: 300px; margin: 10px; border: 1px solid #ddd; border-radius: 4px; }
         .collapsible { background-color: #007acc; color: white; cursor: pointer; padding: 15px; border: none; text-align: left; outline: none; font-size: 16px; border-radius: 4px; margin: 5px 0; width: 100%; }
         .collapsible:hover { background-color: #005fa3; }
         .content { padding: 0 15px; display: none; overflow: hidden; background-color: #f8f9fa; border-radius: 0 0 4px 4px; }
@@ -248,29 +183,29 @@ class AdvancedRecon(IntermediateRecon):
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Advanced Reconnaissance Report</h1>
+            <h1>Advanced Reconnaissance Report</h1>
             <h2>{{ domain }}</h2>
             <p>Generated on: {{ timestamp }}</p>
         </div>
 
         <!-- Executive Summary -->
         <div class="section">
-            <h2>📊 Executive Summary</h2>
+            <h2>Executive Summary</h2>
             <div class="info-grid">
                 <div class="info-card">
-                    <h3>🌐 Subdomains Found</h3>
+                    <h3>Subdomains Found</h3>
                     <p><strong>{{ subdomains|length }}</strong> subdomains discovered</p>
                 </div>
                 <div class="info-card {{ 'warning-card' if open_ports else '' }}">
-                    <h3>🔓 Open Ports</h3>
+                    <h3>Open Ports</h3>
                     <p><strong>{{ open_ports|length }}</strong> open ports detected</p>
                 </div>
                 <div class="info-card {{ 'danger-card' if waf_detected else 'success-card' }}">
-                    <h3>🛡️ Security</h3>
+                    <h3>Security</h3>
                     <p>WAF: {{ waf_detected|join(', ') if waf_detected else 'Not detected' }}</p>
                 </div>
                 <div class="info-card">
-                    <h3>📧 Intelligence</h3>
+                    <h3>Intelligence</h3>
                     <p><strong>{{ emails|length }}</strong> email addresses found</p>
                 </div>
             </div>
@@ -278,7 +213,7 @@ class AdvancedRecon(IntermediateRecon):
 
         <!-- Subdomains -->
         <div class="section">
-            <button class="collapsible">🌐 Subdomains ({{ subdomains|length }})</button>
+            <button class="collapsible">Subdomains ({{ subdomains|length }})</button>
             <div class="content">
                 <table>
                     <tr><th>Subdomain</th><th>Status</th></tr>
@@ -292,7 +227,7 @@ class AdvancedRecon(IntermediateRecon):
         <!-- Port Scan Results -->
         {% if open_ports %}
         <div class="section">
-            <button class="collapsible">🔓 Port Scan Results</button>
+            <button class="collapsible">Port Scan Results</button>
             <div class="content">
                 <table>
                     <tr><th>Port</th><th>Service</th><th>Product</th><th>Version</th></tr>
@@ -312,7 +247,7 @@ class AdvancedRecon(IntermediateRecon):
         <!-- Technology Stack -->
         {% if technology_stack %}
         <div class="section">
-            <button class="collapsible">💻 Technology Stack</button>
+            <button class="collapsible">Technology Stack</button>
             <div class="content">
                 <div class="info-grid">
                     <div class="info-card">
@@ -342,24 +277,24 @@ class AdvancedRecon(IntermediateRecon):
 
         <!-- Security Analysis -->
         <div class="section">
-            <button class="collapsible">🛡️ Security Analysis</button>
+            <button class="collapsible">Security Analysis</button>
             <div class="content">
                 {% if waf_detected %}
-                <h3>🔥 WAF Detection</h3>
+                <h3>WAF Detection</h3>
                 {% for waf in waf_detected %}
                 <span class="badge warning">{{ waf }}</span>
                 {% endfor %}
                 {% endif %}
 
                 {% if cdn_detected %}
-                <h3>☁️ CDN Detection</h3>
+                <h3>CDN Detection</h3>
                 {% for cdn in cdn_detected %}
                 <span class="badge">{{ cdn }}</span>
                 {% endfor %}
                 {% endif %}
 
                 {% if security_headers %}
-                <h3>🔒 Security Headers</h3>
+                <h3>Security Headers</h3>
                 <table>
                     <tr><th>Header</th><th>Status</th></tr>
                     {% for header, value in security_headers.items() %}
@@ -373,29 +308,10 @@ class AdvancedRecon(IntermediateRecon):
             </div>
         </div>
 
-        <!-- Screenshots -->
-        {% if screenshots %}
-        <div class="section">
-            <button class="collapsible">📸 Screenshots</button>
-            <div class="content">
-                <div style="display: flex; flex-wrap: wrap;">
-                {% for url, screenshot in screenshots.items() %}
-                    {% if screenshot.status == 'success' %}
-                    <div style="margin: 10px;">
-                        <h4>{{ url }}</h4>
-                        <img src="screenshots/{{ screenshot.filename }}" alt="{{ url }}" class="screenshot">
-                    </div>
-                    {% endif %}
-                {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
         <!-- Intelligence -->
         {% if emails %}
         <div class="section">
-            <button class="collapsible">📧 Email Intelligence</button>
+            <button class="collapsible">Email Intelligence</button>
             <div class="content">
                 <table>
                     <tr><th>Email Address</th><th>Source</th></tr>
@@ -410,7 +326,7 @@ class AdvancedRecon(IntermediateRecon):
         <!-- DNS Records -->
         {% if dns_records %}
         <div class="section">
-            <button class="collapsible">🌍 DNS Records</button>
+            <button class="collapsible">DNS Records</button>
             <div class="content">
                 {% for record_type, records in dns_records.items() %}
                     {% if records %}
@@ -428,7 +344,7 @@ class AdvancedRecon(IntermediateRecon):
 
         <div class="section" style="text-align: center; margin-top: 50px; color: #666;">
             <p>Report generated by Advanced Reconnaissance Suite</p>
-            <p>⚠️ This report is for authorized security testing only</p>
+            <p>This report is for authorized security testing only</p>
         </div>
     </div>
 
@@ -463,7 +379,6 @@ class AdvancedRecon(IntermediateRecon):
                 'waf_detected': self.results.get('waf_detection', {}).get('waf_detected', []),
                 'cdn_detected': self.results.get('waf_detection', {}).get('cdn_detected', []),
                 'security_headers': self.results.get('waf_detection', {}).get('security_headers', {}),
-                'screenshots': self.results.get('screenshots', {}),
                 'emails': self.results.get('emails', []),
                 'dns_records': self.results.get('dns_records', {})
             }
@@ -493,7 +408,6 @@ class AdvancedRecon(IntermediateRecon):
             'tech': self.detect_technology,
             'emails': self.harvest_emails,
             'shodan': lambda: self.shodan_lookup(shodan_key),
-            'screenshots': self.capture_screenshots,
             'waf': self.detect_waf_cdn,
             'vulnscan': self.vulnerability_scan_basic,
             'report': self.generate_html_report
@@ -526,7 +440,7 @@ def main():
     parser.add_argument('domain', nargs='?', help='Target domain to scan')
     parser.add_argument('-m', '--modules', nargs='+', 
                        choices=['basic', 'portscan', 'banner', 'tech', 'emails', 'shodan', 
-                               'screenshots', 'waf', 'vulnscan', 'report'],
+                               'waf', 'vulnscan', 'report'],
                        help='Modules to run (default: all)')
     parser.add_argument('--shodan-key', help='Shodan API key')
     

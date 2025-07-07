@@ -33,7 +33,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p reports reports/screenshots reports/vuln
+RUN mkdir -p reports reports/vuln
 
 # Set permissions
 RUN chmod +x *.py

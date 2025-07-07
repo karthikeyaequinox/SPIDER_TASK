@@ -1,8 +1,8 @@
-# 🔍 Advanced Reconnaissance Suite
+# Advanced Reconnaissance Suite
 
 A comprehensive, professional-grade domain reconnaissance toolkit with three progressive levels of functionality, web interface, and containerization support.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Installation](#installation)
@@ -15,34 +15,33 @@ A comprehensive, professional-grade domain reconnaissance toolkit with three pro
 - [Contributing](#contributing)
 - [Disclaimer](#disclaimer)
 
-## ✨ Features
+## Features
 
 ### Level 1: Basic Reconnaissance
-- 🌐 Subdomain enumeration via crt.sh API
-- 🔍 DNS record lookup (A, NS, MX, TXT, CNAME)
-- 📋 WHOIS information gathering
-- 🌐 HTTP header analysis
-- 🤖 robots.txt and sitemap.xml retrieval
-- 🌍 GeoIP location detection
+- Subdomain enumeration via crt.sh API
+- DNS record lookup (A, NS, MX, TXT, CNAME)
+- WHOIS information gathering
+- HTTP header analysis
+- robots.txt and sitemap.xml retrieval
+- GeoIP location detection
 
 ### Level 2: Intermediate Reconnaissance
-- 🔓 Advanced port scanning with nmap
-- 🏷️ Service banner grabbing
-- 💻 Web technology stack detection
-- 📧 Email address harvesting
-- 🛰️ Shodan API integration
-- 📊 Structured reporting (JSON/CSV)
+- Advanced port scanning with nmap
+- Service banner grabbing
+- Web technology stack detection
+- Email address harvesting
+- Shodan API integration
+- Structured reporting (JSON/CSV)
 
 ### Level 3: Advanced Reconnaissance
-- 📸 Automated screenshot capture
-- 🛡️ WAF/CDN detection and analysis
-- 🔒 Security header assessment
-- 🔍 Basic vulnerability scanning
-- 📄 Professional HTML report generation
-- 🌐 Flask web interface
-- 🐳 Docker containerization
+- WAF/CDN detection and analysis
+- Security header assessment
+- Basic vulnerability scanning
+- Professional HTML report generation
+- Flask web interface
+- Docker containerization
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -74,7 +73,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 📖 Usage
+## Usage
 
 ### Command Line Interface
 
@@ -111,7 +110,7 @@ python3 intermediate_recon.py example.com -f csv
 python3 advanced_recon.py example.com
 
 # Custom module selection
-python3 advanced_recon.py example.com -m basic portscan screenshots waf report
+python3 advanced_recon.py example.com -m basic portscan waf report
 
 # With Shodan integration
 python3 advanced_recon.py example.com --shodan-key YOUR_API_KEY
@@ -127,7 +126,7 @@ python3 app.py
 # Open browser to: http://localhost:5000
 ```
 
-## 🔧 Modules
+## Modules
 
 | Module | Description | Level | CLI Flag |
 |--------|-------------|-------|----------|
@@ -137,20 +136,19 @@ python3 app.py
 | **tech** | Technology stack detection | 2+ | `tech` |
 | **emails** | Email address harvesting | 2+ | `emails` |
 | **shodan** | Shodan API integration | 2+ | `shodan` |
-| **screenshots** | Automated screenshots | 3 | `screenshots` |
 | **waf** | WAF/CDN detection | 3 | `waf` |
 | **vulnscan** | Basic vulnerability scanning | 3 | `vulnscan` |
 | **report** | HTML report generation | 3 | `report` |
 
-## 🌐 Web Interface
+## Web Interface
 
 The Flask web interface provides:
 
-- 🎯 **Interactive Target Configuration**: Easy domain input and module selection
-- 📊 **Real-time Progress Tracking**: Live scan progress and logging
-- 📈 **Visual Results Dashboard**: Comprehensive results visualization
-- 📥 **Report Downloads**: JSON and HTML report generation
-- 📱 **Responsive Design**: Works on desktop and mobile devices
+- **Interactive Target Configuration**: Easy domain input and module selection
+- **Real-time Progress Tracking**: Live scan progress and logging
+- **Visual Results Dashboard**: Comprehensive results visualization
+- **Report Downloads**: JSON and HTML report generation
+- **Responsive Design**: Works on desktop and mobile devices
 
 ### Features:
 - Real-time scan progress with live logs
@@ -160,7 +158,7 @@ The Flask web interface provides:
 - Background processing
 - Error handling and status tracking
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Quick Start with Docker
 
@@ -194,7 +192,7 @@ The Dockerfile includes:
 - Non-root user for security
 - Proper volume mounts for reports
 
-## 📊 Report Formats
+## Report Formats
 
 ### JSON Report Structure
 ```json
@@ -220,14 +218,13 @@ The Dockerfile includes:
 ```
 
 ### HTML Report Features
-- 📊 Executive summary with key metrics
-- 🔍 Detailed findings in collapsible sections
-- 📸 Screenshot gallery
-- 📈 Interactive charts and tables
-- 🎨 Professional styling and branding
-- 📱 Mobile-responsive design
+- Executive summary with key metrics
+- Detailed findings in collapsible sections
+- Interactive charts and tables
+- Professional styling and branding
+- Mobile-responsive design
 
-## 🔑 API Keys and Configuration
+## API Keys and Configuration
 
 ### Shodan API
 1. Register at [shodan.io](https://www.shodan.io/)
@@ -243,7 +240,7 @@ mkdir config
 echo "SHODAN_API_KEY=your_key_here" > config/.env
 ```
 
-## 📝 Examples
+## Examples
 
 ### Example 1: Quick Basic Scan
 ```bash
@@ -252,7 +249,7 @@ python3 basic_recon.py google.com
 
 ### Example 2: Comprehensive Scan
 ```bash
-python3 advanced_recon.py example.com -m basic portscan tech waf screenshots report
+python3 advanced_recon.py example.com -m basic portscan tech waf report
 ```
 
 ### Example 3: Automated Pipeline
@@ -263,7 +260,7 @@ python3 advanced_recon.py $DOMAIN --shodan-key $SHODAN_KEY
 echo "Reports available in reports/ directory"
 ```
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 advanced-recon-suite/
@@ -279,25 +276,24 @@ advanced-recon-suite/
 │   └── index.html
 ├── static/               # Static web assets
 ├── reports/              # Generated reports
-│   ├── screenshots/      # Screenshot storage
 │   └── vuln/            # Vulnerability reports
 └── config/               # Configuration files
 ```
 
-## 🔒 Security Considerations
+## Security Considerations
 
 ### Ethical Usage
-- ⚖️ Only scan domains you own or have explicit permission to test
-- 📋 Comply with terms of service and local laws
-- 🛡️ Use responsibly and ethically
+- Only scan domains you own or have explicit permission to test
+- Comply with terms of service and local laws
+- Use responsibly and ethically
 
 ### Security Features
-- 🔐 Non-root Docker container execution
-- 🚫 Input validation and sanitization
-- 🔒 Secure API key handling
-- 📊 Rate limiting considerations
+- Non-root Docker container execution
+- Input validation and sanitization
+- Secure API key handling
+- Rate limiting considerations
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -326,7 +322,7 @@ sudo ufw allow 5000/tcp
 ping -c 4 8.8.8.8
 ```
 
-## 📚 Dependencies
+## Dependencies
 
 ### Core Python Libraries
 - `requests` - HTTP requests
@@ -341,9 +337,8 @@ ping -c 4 8.8.8.8
 - `nmap` - Network scanning
 - `nikto` - Vulnerability scanning
 - `whois` - Domain information
-- `chromium` - Web screenshots
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -351,21 +346,21 @@ ping -c 4 8.8.8.8
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 This tool is for educational and authorized security testing purposes only. Users are responsible for complying with applicable laws and regulations. The developers assume no liability for misuse of this software.
 
 **Key Points:**
-- 🔍 Only scan domains you own or have explicit written permission to test
-- 📋 Comply with all applicable local, state, and federal laws
-- 🛡️ Respect rate limits and terms of service of external APIs
-- 📊 Use the information gathered responsibly and ethically
+- Only scan domains you own or have explicit written permission to test
+- Comply with all applicable local, state, and federal laws
+- Respect rate limits and terms of service of external APIs
+- Use the information gathered responsibly and ethically
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Thanks to the open-source security community
 - Special thanks to the developers of nmap, nikto, and other tools integrated
@@ -373,6 +368,6 @@ This tool is for educational and authorized security testing purposes only. User
 
 ---
 
-**🔍 Happy Reconnaissance!** 
+**Advanced Reconnaissance Suite** 
 
 For support, issues, or feature requests, please open an issue on the project repository.

@@ -22,6 +22,8 @@
         .module-checkbox { display: flex; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: background 0.3s; }
         .module-checkbox:hover { background: #e9ecef; }
         .module-checkbox input { margin-right: 10px; }
+        .module-checkbox.module-unavailable { opacity: 0.6; background: #f0f0f0; cursor: not-allowed; }
+        .module-checkbox.module-unavailable:hover { background: #f0f0f0; }
         
         .btn { padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: transform 0.3s; }
         .btn:hover { transform: translateY(-2px); }
@@ -72,43 +74,39 @@
                     <div class="modules-grid">
                         <label class="module-checkbox">
                             <input type="checkbox" name="modules" value="basic" checked>
-                            <span>🌐 Basic Recon</span>
+                            <span>🌐 Basic Recon (Full)</span>
                         </label>
                         <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="portscan" checked>
-                            <span>🔓 Port Scanning</span>
+                            <input type="checkbox" name="modules" value="tech">
+                            <span>� Technology Detection (Headers)</span>
                         </label>
                         <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="banner">
-                            <span>🏷️ Banner Grabbing</span>
+                            <input type="checkbox" name="modules" value="waf">
+                            <span>🛡️ Basic WAF Detection (Headers)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="tech" checked>
-                            <span>💻 Technology Detection</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="portscan" disabled>
+                            <span>� Port Scanning (Requires Advanced Mode)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="emails">
-                            <span>📧 Email Harvesting</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="banner" disabled>
+                            <span>🏷️ Banner Grabbing (Requires Advanced Mode)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="shodan">
-                            <span>🛰️ Shodan Lookup</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="emails" disabled>
+                            <span>� Email Harvesting (Requires Advanced Mode)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="screenshots">
-                            <span>📸 Screenshots</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="shodan" disabled>
+                            <span>�️ Shodan Lookup (Requires Advanced Mode)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="waf" checked>
-                            <span>🛡️ WAF/CDN Detection</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="vulnscan" disabled>
+                            <span>🔍 Vulnerability Scan (Requires Advanced Mode)</span>
                         </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="vulnscan">
-                            <span>🔍 Vulnerability Scan</span>
-                        </label>
-                        <label class="module-checkbox">
-                            <input type="checkbox" name="modules" value="report" checked>
-                            <span>📄 HTML Report</span>
+                        <label class="module-checkbox module-unavailable">
+                            <input type="checkbox" name="modules" value="report" disabled>
+                            <span>📄 HTML Report (Requires Advanced Mode)</span>
                         </label>
                     </div>
                 </div>
@@ -258,12 +256,14 @@
             resultsGrid.innerHTML = '';
             downloadLinks.innerHTML = '';
 
-            // Display key metrics
+            console.log('Results data:', data); // Debug log
+
+            // Display key metrics - fix the data access
             const metrics = [
                 { label: 'Subdomains Found', value: data.subdomains ? data.subdomains.length : 0, icon: '🌐' },
-                { label: 'Open Ports', value: data.port_scan && data.port_scan.open_ports ? data.port_scan.open_ports.length : 0, icon: '🔓' },
+                { label: 'DNS Records', value: data.dns_records ? Object.keys(data.dns_records).length : 0, icon: '�' },
                 { label: 'Email Addresses', value: data.emails ? data.emails.length : 0, icon: '📧' },
-                { label: 'Screenshots', value: data.screenshots ? Object.keys(data.screenshots).length : 0, icon: '📸' }
+                { label: 'GeoIP Info', value: data.geoip_info && Object.keys(data.geoip_info).length > 0 ? 1 : 0, icon: '🌍' }
             ];
 
             metrics.forEach(metric => {
@@ -277,13 +277,35 @@
                 resultsGrid.appendChild(card);
             });
 
-            // Add download links
-            const downloadLinksHtml = `
-                <h3>📥 Download Reports</h3>
-                <a href="/reports/${data.domain}_report_${new Date().toISOString().slice(0,10)}.json" class="download-link">📄 JSON Report</a>
-                <a href="/reports/${data.domain}_advanced_report_${new Date().toISOString().slice(0,10)}.html" class="download-link">🌐 HTML Report</a>
-            `;
-            downloadLinks.innerHTML = downloadLinksHtml;
+            // Load and display download links
+            loadDownloadLinks(data.domain || 'unknown');
+        }
+
+        function loadDownloadLinks(domain) {
+            // Get available files for this scan
+            fetch(`/scan_files/${currentScanId}`)
+            .then(response => response.json())
+            .then(files => {
+                const downloadLinks = document.getElementById('downloadLinks');
+                if (files.error) {
+                    downloadLinks.innerHTML = '<p>No reports available yet</p>';
+                    return;
+                }
+
+                let linksHtml = '<h3>📥 Download Reports</h3>';
+                if (files.text_report) {
+                    linksHtml += `<a href="/reports/${files.text_report}" class="download-link" target="_blank">📄 Text Report</a>`;
+                }
+                if (files.json_report) {
+                    linksHtml += `<a href="/reports/${files.json_report}" class="download-link" target="_blank">📋 JSON Report</a>`;
+                }
+                downloadLinks.innerHTML = linksHtml;
+            })
+            .catch(error => {
+                console.error('Error loading download links:', error);
+                const downloadLinks = document.getElementById('downloadLinks');
+                downloadLinks.innerHTML = '<p>Error loading download links</p>';
+            });
         }
 
         function resetForm() {

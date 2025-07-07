@@ -1,0 +1,89 @@
+{
+  "domain": "testphp.vulnweb.com",
+  "timestamp": "2025-07-08T03:17:07.099475",
+  "subdomains": [],
+  "dns_records": {
+    "A": [
+      "44.228.249.3"
+    ],
+    "NS": [],
+    "MX": [],
+    "TXT": [
+      "\"google-site-verification:toEctYsulNIxgraKk7H3z58PCyz2IOCc36pIupEPmYQ\""
+    ],
+    "CNAME": []
+  },
+  "whois_info": {},
+  "http_headers": {
+    "http": {
+      "Server": "nginx/1.19.0",
+      "Date": "Mon, 07 Jul 2025 16:17:10 GMT",
+      "Content-Type": "text/html; charset=UTF-8",
+      "Connection": "keep-alive",
+      "X-Powered-By": "PHP/5.6.40-38+ubuntu20.04.1+deb.sury.org+1",
+      "Content-Encoding": "gzip"
+    },
+    "https": {}
+  },
+  "robots_txt": "",
+  "sitemap_xml": "",
+  "geoip_info": {
+    "ip": "44.228.249.3",
+    "network": "44.228.0.0/14",
+    "version": "IPv4",
+    "city": "Boardman",
+    "region": "Oregon",
+    "region_code": "OR",
+    "country": "US",
+    "country_name": "United States",
+    "country_code": "US",
+    "country_code_iso3": "USA",
+    "country_capital": "Washington",
+    "country_tld": ".us",
+    "continent_code": "NA",
+    "in_eu": false,
+    "postal": "97818",
+    "latitude": 45.8272,
+    "longitude": -119.7206,
+    "timezone": "America/Los_Angeles",
+    "utc_offset": "-0700",
+    "country_calling_code": "+1",
+    "currency": "USD",
+    "currency_name": "Dollar",
+    "languages": "en-US,es-US,haw,fr",
+    "country_area": 9629091.0,
+    "country_population": 327167434,
+    "asn": "AS16509",
+    "org": "AMAZON-02"
+  },
+  "port_scan": {
+    "target_ip": "44.228.249.3",
+    "scan_type": "-sS",
+    "ports_scanned": "1-1000",
+    "open_ports": [
+      {
+        "port": 80,
+        "state": "open",
+        "service": "http",
+        "version": "",
+        "product": ""
+      }
+    ],
+    "host_status": "up"
+  },
+  "banner_grab": {
+    "80": "HTTP/1.1 200 OK\r\nServer: nginx/1.19.0\r\nDate: Mon, 07 Jul 2025 16:17:44 GMT\r\nContent-Type: text/html; charset=UTF-8\r\nConnection: keep-alive\r\nX-Powered-By: PHP/5.6.40-38+ubuntu20.04.1+deb.sury.org+1"
+  },
+  "technology_stack": {
+    "web_server": "nginx/1.19.0",
+    "programming_language": [
+      "PHP"
+    ],
+    "frameworks": [],
+    "cms": "Unknown",
+    "javascript_libraries": [],
+    "cdn": "Unknown"
+  },
+  "emails": [],
+  "shodan_info": {}
+}

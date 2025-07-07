@@ -1,0 +1,53 @@
+{
+  "domain": "testphp.vulnweb.com",
+  "timestamp": "2025-06-25T13:13:51.875533",
+  "subdomains": [
+    "www.testphp.vulnweb.com",
+    "mail.testphp.vulnweb.com",
+    "ftp.testphp.vulnweb.com",
+    "admin.testphp.vulnweb.com",
+    "api.testphp.vulnweb.com"
+  ],
+  "dns_records": {
+    "A": [
+      "93.184.216.34",
+      "192.168.1.1"
+    ],
+    "NS": [
+      "a.iana-servers.net",
+      "b.iana-servers.net"
+    ],
+    "MX": [
+      "mail.example.com"
+    ],
+    "TXT": [
+      "v=spf1 include:_spf.google.com ~all"
+    ],
+    "CNAME": []
+  },
+  "whois_info": {
+    "registrar": "IANA",
+    "creation_date": "1995-08-14",
+    "expiration_date": "2024-08-13",
+    "name_servers": [
+      "A.IANA-SERVERS.NET",
+      "B.IANA-SERVERS.NET"
+    ]
+  },
+  "http_headers": {
+    "https": {
+      "Server": "nginx/1.18.0",
+      "Content-Type": "text/html",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff"
+    }
+  },
+  "robots_txt": "User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: https://example.com/sitemap.xml",
+  "sitemap_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n    <url><loc>https://example.com/</loc></url>\n    <url><loc>https://example.com/about</loc></url>\n</urlset>",
+  "geoip_info": {
+    "ip": "93.184.216.34",
+    "city": "Norwell",
+    "country_name": "United States",
+    "org": "Edgecast Inc."
+  }
+}

@@ -190,9 +190,9 @@ def main():
     print("TEST SUMMARY")
     print("=" * 60)
     print("✓ All tests completed")
-    print("📁 Check the 'reports/' directory for generated reports")
-    print("📄 Check for test output files in current directory")
-    print("\n🔍 Test completed successfully!")
+    print(" Check the 'reports/' directory for generated reports")
+    print("Check for test output files in current directory")
+    print("\n Test completed successfully!")
     
     return True
 
